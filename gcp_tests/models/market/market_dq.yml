@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: market_data
+    database: ey-poc  
+    schema: ext_table  
+    tables:
+      - name: orders
+      - name: customers
+
+  - name: stripe
+    tables:
+      - name: payments
