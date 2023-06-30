@@ -23,7 +23,9 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
-
+# on-run-end:
+#   - insert into ey-poc.ext_table.dbt_audit_log (SOURCE, SUBJECT, SEVERITY, MESSAGE, DETAIL) select 'dbt', 'Run DQs', {{ dbt_run_result(results) }}, 'dbt ran.', parse_json('{{ dbt_audit_details(results) }}')::variant
+#   - commit
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
@@ -35,3 +37,4 @@ models:
     # Config indicated by + and applies to all files under models/example/
     example:
       +materialized: view
+

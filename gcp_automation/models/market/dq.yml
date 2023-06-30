@@ -1,0 +1,60 @@
+version: 2
+
+sources:
+  - name: market_data
+    tags: ['DQ Checks']
+    description: This is the market data
+    database: ey-poc 
+    schema: ext_table
+    freshness:
+      warn_after: { count: 2, period: day }
+      error_after: { count: 3, period: day }  
+    loaded_at_field: updt_ts
+    tables:
+      - name: ey_poc_ext_market_stg
+        tags: ['functional', 'market_dq']
+        description: this is the stage data for Market
+
+        columns:
+          - name: ID
+            tests:
+              - not_null
+              - unique
+            tags: ['constraint']
+          - name: Marital_Status
+            tests:
+              - not_null
+              - accepted_values:
+                  name: Valid martial status
+                  values: ['Single', 'Married', 'Together', 'Divorced', 'Widow', 'YOLO', 'Alone', 'Absurd']
+          - name: Year_Birth
+            tags: ['Year_Birth']
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_match_regex:
+                  name: To validate the Year of Birth data quality
+                  regex: '^[0-9]{4}$'
+          - name: Income
+            tags: ['Income']
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_match_regex:
+                  name: Validation of Income values are in consistent and its data integrity
+                  regex: '^[0-9]+$'
+
+          - name: Country
+            tags: ['Country']
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_in_set:
+                  name: To validate the data integrity of country values loaded
+                  value_set: ['Spain','Canada','USA','Australia','Germany','India','Saudi Arabia','Mexico']
+                  row_condition: "Country is not null"
+
+          - name: Dt_Customer
+            tags: ['Dt_Customer']
+            tests:
+              - not_null
+              - assert_date_format:
+                  name: To validate the date format and data integrity of Dt_Customer
+                  condtion: true
