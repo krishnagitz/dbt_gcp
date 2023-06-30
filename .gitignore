@@ -1,2 +1,3 @@
 venv/
 reporting/dbt_test/
+.env
