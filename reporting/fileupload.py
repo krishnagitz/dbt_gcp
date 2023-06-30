@@ -11,9 +11,7 @@ credentials_dict = {
     'private_key_id': os.getenv("private_key_id"),
     'private_key': os.getenv("private_key"),
 }
-credentials = ServiceAccountCredentials.from_json_keyfile_dict(
-    credentials_dict
-)
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict)
 client = storage.Client(credentials=credentials, project='ey-poc')
 bucket = client.get_bucket('ey-poc')
 blob = bucket.blob(r'C:\Users\WF941RK\OneDrive - EY\Documents\GitHub\dbt_gcp\reporting\dbt_test\run_results_2023-06-30_02-17-PM.csv')
