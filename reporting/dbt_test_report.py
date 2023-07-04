@@ -24,19 +24,31 @@ def flatten_json(json_data, parent_key='', flattened_dict=None):
 # Read the run_results.json file
 with open('gcp_automation/target/run_results.json') as file:
     data = json.load(file)
+
+# Read the manifest.json file
+with open('gcp_automation/target/manifest.json') as file:
+    data_mf = json.load(file)
+
 # Extract the test results from the data
 test_results = data.get('results', [])
-print('Test_Results:', test_results)
+manifest_results = data_mf.get('nodes', [])
+print('Test_Results:', manifest_results)
 
 # Flatten the test results
 flattened_data = []
+flattened_data_mf = []
 for result in test_results:
     flattened_result = flatten_json(result)
     flattened_data.append(flattened_result)
 
+for result in manifest_results:
+    flattened_result_mf = flatten_json(result)
+    flattened_data_mf.append(flattened_result_mf)
+    
 print('Flatten \n', flattened_data)
 # Convert the flattened data to a DataFrame
 df = pd.DataFrame(flattened_data)
+df_manifest = pd.DataFrame(flattened_data_mf)
 
 # Rename the columns
 new_column_names = {'status': 'status', 'timing[0].name': '1st Level','timing[0].started_at':'C_started_at',
@@ -52,6 +64,7 @@ print(df)
 # Generate a timestamp string
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%I-%M-%p")
 df.to_csv(f'reporting/dbt_test/run_results_{timestamp}.csv',index=False)
+df_manifest.to_csv(f'reporting/dbt_test/manifest_{timestamp}.csv', index=False)
 
 # Apply styling to the DataFrame
 # styled_df = df.style.set_table_styles([
