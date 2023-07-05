@@ -32,7 +32,7 @@ with open('gcp_automation/target/manifest.json') as file:
 # Extract the test results from the data
 test_results = data.get('results', [])
 manifest_results = data_mf.get('nodes', [])
-print('Test_Results:', manifest_results)
+# print('Test_Results:', manifest_results)
 
 # Flatten the test results
 flattened_data = []
